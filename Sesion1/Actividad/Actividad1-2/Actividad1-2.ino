@@ -11,51 +11,43 @@ int pulsando = 0;
 
 int modo = 0;
 
-void setup() {
-  Serial.begin(9600); // Iniciar el Serial
-  Serial.println("Setup");
-
-  pinMode(led1, OUTPUT);
-  pinMode(led2, OUTPUT);
-
-  pinMode(boton1, INPUT);
-  pinMode(boton2, INPUT);
-
+void generarNumeros() {
   int i;
   for(i = 0; i < sizeof(colores)/sizeof(int); i++){
     colores[i] = random(0,2);
-    Serial.print(", " + String(colores[i]));
+    Serial.print(String(colores[i]));
+
+    if(i < sizeof(colores)/sizeof(int)){
+      Serial.print(",");
+    }
   }
   Serial.println();
-
 }
 
-void loop() {
-
-  if(modo == 0){
-    
-    int i;
-    Serial.println("colores");
-    for(i = 0; i < nivel; i++){
-      if(colores[i] == 0){
-        digitalWrite(led1, HIGH);
-        digitalWrite(led2, LOW);
-      }
-      else if(colores[i] == 1){
-        digitalWrite(led1, LOW);
-        digitalWrite(led2, HIGH);
-      }
-      delay(1000);
-      digitalWrite(led1, LOW);
+void mostrarCombinacion(){
+  int i;
+  Serial.println("colores");
+  for(i = 0; i < nivel; i++){
+    if(colores[i] == 0){
+      digitalWrite(led1, HIGH);
       digitalWrite(led2, LOW);
-      delay(500);
     }
+    else if(colores[i] == 1){
+      digitalWrite(led1, LOW);
+      digitalWrite(led2, HIGH);
+    }
+    delay(1000);
+    digitalWrite(led1, LOW);
+    digitalWrite(led2, LOW);
+    delay(500);
+  }
 
     modo = 1;
-  }
-  else if(modo == 1){
+}
 
-    digitalWrite(led1, LOW);
+void comprobarCombinacion(){
+
+  digitalWrite(led1, LOW);
     digitalWrite(led2, LOW);
 
     int pulsacion_boton1 = digitalRead(boton1);
@@ -65,40 +57,30 @@ void loop() {
       pulsando = 1;
       if(colores[pulsacion] == 0){
         pulsacion++;
+        delay(100);
       }
       else{
-        nivel = 2;
-        modo = 0;
-        pulsacion = 0;
-        digitalWrite(led1, HIGH);
-        digitalWrite(led2, HIGH);
-        delay(1000);
+        reiniciarJuegoTrasFallo();
       }
-      
     
       Serial.println("Nivel :" + String(nivel));
       Serial.println("Pulsacion :" + String(pulsacion));
       Serial.println("boton 0: " + String(pulsando));
     }
     else if(pulsacion_boton2 == LOW && pulsacion_boton1 == HIGH && pulsando == 0){
+      
       pulsando = 1;
       if(colores[pulsacion] == 1){
         pulsacion++;
+        delay(100);
       }
       else{
-        nivel = 2;
-        modo = 0;
-        pulsacion = 0;
-        digitalWrite(led1, HIGH);
-        digitalWrite(led2, HIGH);
-        delay(1000);
-
+        reiniciarJuegoTrasFallo();
       }
       
-    
-    Serial.println("Nivel :" + String(nivel));
-    Serial.println("Pulsacion :" + String(pulsacion));
-    Serial.println("boton 1: " + String(pulsando));
+      Serial.println("Nivel :" + String(nivel));
+      Serial.println("Pulsacion :" + String(pulsacion));
+      Serial.println("boton 1: " + String(pulsando));
 
     }
     else if(pulsacion_boton2 == HIGH && pulsacion_boton1 == HIGH){
@@ -111,6 +93,39 @@ void loop() {
       pulsacion = 0;
     }
     
+}
+
+void reiniciarJuegoTrasFallo(){
+  nivel = 2;
+  modo = 0;
+  pulsacion = 0;
+  digitalWrite(led1, HIGH);
+  digitalWrite(led2, HIGH);
+  delay(1000);
+  digitalWrite(led1, LOW);
+  digitalWrite(led2, LOW);
+  delay(500);
+}
+
+void setup() {
+  Serial.begin(9600); // Iniciar el Serial
+  Serial.println("Setup");
+  generarNumeros();
+
+  pinMode(led1, OUTPUT);
+  pinMode(led2, OUTPUT);
+
+  pinMode(boton1, INPUT);
+  pinMode(boton2, INPUT);
+}
+
+void loop() {
+
+  if(modo == 0){
+    mostrarCombinacion();
+  }
+  else if(modo == 1){
+    comprobarCombinacion();
   }
 
 }
