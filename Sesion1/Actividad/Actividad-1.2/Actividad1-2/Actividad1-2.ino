@@ -110,6 +110,9 @@ void reiniciarJuegoTrasFallo(){
 void setup() {
   Serial.begin(9600); // Iniciar el Serial
   Serial.println("Setup");
+
+  randomSeed(analogRead(A0));  //Leemos el ruido de la salida analogica que nunca es la misma. De esta forma logramos que el valor de la semilla sea diferente siempre y asi logramos una 
+                               // una secuencia aleatoria de numeros.
   generarNumeros();
 
   pinMode(led1, OUTPUT);
