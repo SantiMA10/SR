@@ -7,6 +7,8 @@
 #define DERECHA 0
 #define IZQUIERDA 1
 #define PARADA 2
+#define ARRIBA 3
+#define ABAJO 4
 
 #define sizearray 100
 
@@ -19,6 +21,9 @@ int Yar = 11;
 Servo servoX;
 int pinServoX = 5;
 
+Servo servoY;
+int pinServoY = 5;
+
 int posicion[sizearray];
 long tiempo[sizearray];
 int i;
@@ -29,28 +34,28 @@ int modo;
 int modoAnterior;
 int grabando;
 int reproduciendo;
-int moviendo;
 
 void setup() {
   Serial.begin(9600);
   servoX.attach(pinServoX);
+  servoY.attach(pinServoY);
 
   pinMode(Xder, INPUT);
+  pinMode(Yab, INPUT);
 
   modo = PARADA;
   grabando = 0;
   reproduciendo = 0;
-  moviendo = 0;
   i = 0;
 }
 
 void loop() {
   int valorX = analogRead(X_pinX);
+  int valorY = analogRead(Y_pinY);
   //Serial.println("X: "+String(valorX));
 
   if (valorX < 412) {
     servoX.write(180);
-    moviendo = 0;
 
     if (grabando == 1 && modo != IZQUIERDA) {
       modoAnterior = modo;
@@ -60,7 +65,7 @@ void loop() {
     modo = IZQUIERDA;
 
   }
-  else if (valorX > 412 && valorX < 612) {
+  else if (valorX > 412 && valorX < 612 || valorY > 412 && valorY < 612) {
     servoX.write(90);
 
     if (grabando == 1 && modo != PARADA) {
@@ -79,6 +84,28 @@ void loop() {
       tiempoInicial = millis();
     }
     modo = DERECHA;
+
+  }
+  else if (valorY < 412) {
+    servoY.write(180);
+
+    if (grabando == 1 && modo != ARRIBA) {
+      modoAnterior = modo;
+      grabar();
+      tiempoInicial = millis();
+    }
+    modo = ARRIBA;
+
+  }
+  else if (valorY > 612) {
+    servoY.write(0);
+
+    if (grabando == 1 && modo != ABAJO) {
+      modoAnterior = modo;
+      grabar();
+      tiempoInicial = millis();
+    }
+    modo = ABAJO;
 
   }
 
@@ -122,6 +149,14 @@ void loop() {
         servoX.write(90);
         delay(tiempo[j]);
       }
+      else if (posicion[j] == ARRIBA) {
+        servoY.write(180);
+        delay(tiempo[j]);
+      }
+      else if (posicion[j] == ABAJO) {
+        servoY.write(0);
+        delay(tiempo[j]);
+      }
     }
     reproduciendo = 0;
   }
@@ -140,5 +175,9 @@ void irA0() {
   servoX.write(0);
   while (digitalRead(Xder) == HIGH) { }
   servoX.write(90);
+
+  servoY.write(0);
+  while (digitalRead(Yab) == HIGH) { }
+  servoY.write(90);
 }
 
