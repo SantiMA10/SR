@@ -21,7 +21,7 @@ h_tornillo_sujecion = 3;
 
 
 difference(){
-    *cube([x_caja, y_caja, z_caja], center=true);
+    cube([x_caja, y_caja, z_caja], center=true);
     translate([0, (y_caja/2)-(y_servo_tornillos/2), -(z_caja/2)+(z_servo/2)-0.01]){
         union(){
             cube([x_servo, y_servo, z_servo], center=true);
@@ -36,13 +36,13 @@ difference(){
     translate([0,(-y_caja/2)+(d_herramienta/2)+margen_herramienta,0]){
         cylinder(h=h_herramienta, d=d_herramienta, $fn=200, center=true);
     }
-    
-}
-
-translate([0,(-y_caja/2)+(d_tornillo_sujecion/2),0]){
+    translate([0,(-y_caja/2)+(h_tornillo_sujecion/2)-0.01,0]){
         rotate([90, 0, 0]){
          cylinder(h=h_tornillo_sujecion, d=d_tornillo_sujecion, $fn=200, center=true);
         }
     }   
+}
+
+
 
 
