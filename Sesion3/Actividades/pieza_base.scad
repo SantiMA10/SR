@@ -3,7 +3,7 @@ alto_cubo = 2;
 an_cubo = 65;
 pro_cubo = 65;
 
-alto_cilindro = 55;
+alto_cilindro = 65;
 
 ancho_tornillo_base = 3;
 alto_tornillo_base = 3;
