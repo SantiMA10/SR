@@ -260,11 +260,11 @@ void loop() {
 
 void grabar() {
   int tiempoFin;
-  if(modoAnterior != 5 && modoAnterior != 6){
-    tiempoFin = millis() - tiempoInicial;
+  if(modoAnterior == 5 || modoAnterior == 6){
+    tiempoFin = tiempoInicial;
   }
   else{
-    tiempoFin = tiempoInicial;
+    tiempoFin = millis() - tiempoInicial;
   }
   posicion[i] = modoAnterior;
   tiempo[i] = tiempoFin;
