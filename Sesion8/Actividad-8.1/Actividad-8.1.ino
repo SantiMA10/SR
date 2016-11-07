@@ -16,14 +16,14 @@ IPAddress subnet(255, 255, 255, 0);
 // Que cada uno ponga la IP de su grupo 201, 202, 203
 IPAddress ip(192, 168, 61, 203);
 
-float temperatura, humedad;
+float temperatura = 11
+, humedad = 11;
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   Ethernet.begin(mac, ip, dnServer, gateway, subnet);
   pinMode(pin_led, OUTPUT);
-  digitalWrite(pin_led,LOW);
   servidor.begin();
   Serial.println("Setup");
   // Imprimir la IP
@@ -56,14 +56,14 @@ void loop() {
             cliente.println("HTTP/1.1 200");
             cliente.println("Content-Type: application/json");
             cliente.println();
-            cliente.println("{temperatura : " + String(temperatura) + "}");
+            cliente.println("{\"temperatura : " + String(temperatura) + "}");
             break;
           }
           else{
             cliente.println("HTTP/1.1 400");
             cliente.println("Content-Type: application/json");
             cliente.println();
-            cliente.println("{error : 'imposible leer el sensor'}");
+            cliente.println("{\"error\" : \"imposible leer el sensor\"}");
             break;
           }
           
@@ -76,14 +76,14 @@ void loop() {
             cliente.println("HTTP/1.1 200");
             cliente.println("Content-Type: application/json");
             cliente.println();
-            cliente.println("{temperatura : " + String(temperatura) + ", humedad : " + String(humedad) + "}");
+            cliente.println("{\"temperatura\" : " + String(temperatura) + ", \"humedad\" : " + String(humedad) + "}");
             break;
           }
           else{
             cliente.println("HTTP/1.1 400");
             cliente.println("Content-Type: application/json");
             cliente.println();
-            cliente.println("{error : 'imposible leer el sensor'}");
+            cliente.println("{\"error\" : \"imposible leer el sensor\"}");
             break;
           }
           
@@ -96,13 +96,13 @@ void loop() {
             cliente.println("HTTP/1.1 200");
             cliente.println("Content-Type: application/json");
             cliente.println();
-            cliente.println("{humedad : " + String(humedad) + "}");
+            cliente.println("{\"humedad\" : " + String(humedad) + "}");
           }
           else{
             cliente.println("HTTP/1.1 400");
             cliente.println("Content-Type: application/json");
             cliente.println();
-            cliente.println("{error : 'imposible leer el sensor'}");
+            cliente.println("{\"error\" : \"imposible leer el sensor\"}");
           }
           
           break;
@@ -133,15 +133,18 @@ void loop() {
     }
 
     // Pequeña pausa para asegurar el envio de datos
-    delay(1000);
+    delay(2000);
     cliente.stop();// Cierra la conexión
   }
+      delay(100);
+
 }
 
 int readSensor() {
   int codigoSalida = dht11.read(humedad, temperatura);
+  //int codigoSalida = 0;
 
-  delay(2000); // Actualizar cada dos segundos
+  delay(7000); // Actualizar cada dos segundos
 
   return codigoSalida;
 }
