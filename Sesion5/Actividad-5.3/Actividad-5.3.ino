@@ -19,16 +19,16 @@
 #define sizearray 100
 
 int Xder = 8;
-int Yab = 13;
+int Yab = 12;
 
 Servo servoX;
-int pinServoX = 5;
+int pinServoX = 7;
 
 Servo servoY;
-int pinServoY = 3;
+int pinServoY = 10;
 
 Servo servoP;
-int pinServoP = 11;
+int pinServoP = 9;
 
 int gradosPinza = 0;
 
