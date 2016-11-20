@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      html, body { height: 100%; margin: 0; padding: 0; }
+      #map { height: 100%; }
+    </style>
+    <script
+        src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYyhgtDWfpzs9yeUeiE64dlfrC8U0mSIM">
+    </script>
+    <script type="text/javascript">   
+    var map = null;
+    var marker = null;
+    var infoWindow = null;
+
+      /**
+       * Inicializa el mapa
+      **/   
+      function initMap() {
+        return new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -34.397, lng: 150.644},
+          zoom: 8
+        });
+      }
+
+      /**
+       * Añade un marcador con datos sobre el sensor
+      */ 
+      function addMarker(map, sensor) {
+        var marker = new google.maps.Marker({
+          position: {
+            lat: -34.397,
+            lng: 150.644
+          },
+          map: map,
+          title: 'Sensor'
+        });
+
+        infowindow = new google.maps.InfoWindow({
+          content: "Temperatura: " + sensor.temperatura + " ºC<br />Humedad: " + sensor.humedad + "%"
+        });
+
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
+
+        return marker;
+      }
+
+      function main() {
+        var ips = ["192.168.61.203"];
+
+        ips.forEach(function(ip) {
+          $.ajax("http://" + ip +"/todo", {
+            method: "GET",
+            success: function(data) {
+              marker.setMap(null);
+              marker = addMarker(map, data);
+
+              if (data.temperatura > 20)
+                console.log("Alerta de temperatura");
+            }
+          });          
+        });
+      }
+
+      $(function() {
+        map = initMap();     
+        marker = addMarker(map, {
+          temperatura: 15,
+          humedad: 40
+        });
+
+        $("#btnEncender").click(function() {
+          $.ajax('http://192.168.61.203/encender', {
+            method: "GET",
+            success: function() {
+              alert("Encendido");
+            }
+          });
+        });
+
+        setInterval(main, 15000);
+      });
+    </script>
+  </head>
+  <body>
+    <a id="btnEncender">Encender</a>
+    <div id="map"></div>    
+  </body>
+</html>
