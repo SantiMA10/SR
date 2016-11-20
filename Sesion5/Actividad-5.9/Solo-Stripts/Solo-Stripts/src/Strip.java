@@ -8,7 +8,7 @@ public class Strip {
 	public void generarOperadores(){
 		/**
 	
-		// algoritmo de permutación en java
+		// algoritmo de permutaciï¿½n en java
 		String[] letras = new String[] {"A","B","C","S"};
 		
 		permutacion(letras,"",3 ,4);
@@ -66,7 +66,7 @@ public class Strip {
 		
 		// Operadores Mundo, generar todas las combinaciones.
 		operadores = new LinkedList<Operador>();
-		// Podría meterlos manualmente...
+		// Podrï¿½a meterlos manualmente...
 		generarOperadores();
 		
 		// Estado Inicial
@@ -103,19 +103,26 @@ public class Strip {
 	
 	boolean Planear(Stack<Estado> estados, Estado objetivos, Stack<Operador> plan){
 		Estado estado = estados.peek();
+		System.out.println(estado);
 		if(objetivosCompletados(estado, objetivos)){
+			System.out.println("objetivo cumplido");
 			return true;
 		}
 		else{
 			List<Operador> operadorAplicables = getOperadoresAplicables(estado);
 			
 			for(Operador operador: operadorAplicables){
+				System.out.println(operador);
 				Estado nuevoEstado = actualizarEstado(estado, operador);
 				if(!estados.contains(nuevoEstado)){
 					estados.push(nuevoEstado);
 					plan.push(operador);
 					if(Planear(estados, objetivos, plan))
 						return true;
+					else {
+						estados.pop();
+						plan.pop();
+					}
 				}
 			}
 		}
@@ -147,7 +154,7 @@ public class Strip {
 		List<Operador> operadoresAplicables = new LinkedList<Operador>();
 		
 		for( Operador operador : operadores){
-			// ¿Cumple las precondiciones?
+			// ï¿½Cumple las precondiciones?
 			if (estado.propiedades.containsAll(operador.precondiciones)){
 				operadoresAplicables.add(operador);
 			}
