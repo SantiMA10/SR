@@ -103,16 +103,13 @@ public class Strip {
 	
 	boolean Planear(Stack<Estado> estados, Estado objetivos, Stack<Operador> plan){
 		Estado estado = estados.peek();
-		System.out.println(estado);
 		if(objetivosCompletados(estado, objetivos)){
-			System.out.println("objetivo cumplido");
 			return true;
 		}
 		else{
 			List<Operador> operadorAplicables = getOperadoresAplicables(estado);
 			
 			for(Operador operador: operadorAplicables){
-				System.out.println(operador);
 				Estado nuevoEstado = actualizarEstado(estado, operador);
 				if(!estados.contains(nuevoEstado)){
 					estados.push(nuevoEstado);
