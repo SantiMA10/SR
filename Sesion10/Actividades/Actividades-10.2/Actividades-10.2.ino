@@ -72,7 +72,7 @@ void comp1_EntratEnPista(int valorSensorIzq, int valorSensorDer) {
   sComp1.activo = false;
   if ( valorSensorIzq == NO_LINEA && valorSensorDer == NO_LINEA ) {
     sComp1.activo = true;
-    control += 0.08;
+    control += 0.01;
     sComp1.servoIzq = 0;
     sComp1.servoDer = 90 + control;
     
