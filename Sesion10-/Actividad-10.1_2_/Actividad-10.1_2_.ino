@@ -439,7 +439,8 @@ void simplificar() {
   camino.replace("IRA", "D");
   camino.replace("ARI", "D");
   camino.replace("DRI", "R");
-  camino.replace("DRD", "R");
+  //camino.replace("DRD", "R");
+  camino.replace("DRARD", "R");
 
   if (initialLength != camino.length())
     simplificar();
