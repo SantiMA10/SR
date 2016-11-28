@@ -42,9 +42,7 @@ void setup()
   // Pausa inicial de 10 segundos
   delay(1000);
 
-  camino = "ARIIIRAIRA";
-  simplificar();
-  modo = 1;
+  modo = 0;
 }
 
 
@@ -186,7 +184,7 @@ void loop()
         // Delante del cruce: _ _ _ _
         // Cucre izq-der
         // Serial.println("Cucre izq-der");
-        camino + camino + "I";
+        camino = camino + "I";
         girarIzquierda();
 
         return;
@@ -195,7 +193,7 @@ void loop()
         // Delante del cruce: _ X X _
         // Cruce adelante-izq-der
         // Serial.println("Cucre adelante-izq-der");
-        camino + camino + "I";
+        camino = camino + "I";
         girarIzquierda();
         return;
       }
@@ -224,7 +222,7 @@ void loop()
         // Algo delante tiene linea
         // Cruce adelante-izq
         // X X X _
-        camino + camino + "I";
+        camino = camino + "I";
         girarIzquierda();
 
         return;
@@ -239,7 +237,7 @@ void loop()
       // Camino sin salida media vuelta
       // _ _ _ _
       // Serial.println("Sin salida");
-      camino + camino + "R";
+      camino = camino + "R";
       darMediaVuelta();
       return;
     } else if  (Sensor1 == NO_LINEA && Sensor2 == LINEA && Sensor3 == LINEA && Sensor4 == LINEA) {
@@ -263,7 +261,7 @@ void loop()
       if (  Sensor2 == LINEA || Sensor3 == LINEA || Sensor4 == LINEA  ) {
         // Algo de linea delante, es una curva a derechas y frente
         // _ X X X
-        camino + camino + "A";
+        camino = camino + "A";
         servoD.write(180);
         servoI.write(0);
 
@@ -308,8 +306,128 @@ void loop()
   else{
 
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    
+    if ( Sensor1 == LINEA && Sensor2 == LINEA && Sensor3 == LINEA && Sensor4 == LINEA  ) {
+      // 3 Posibilidades:  Cucre izq-der || Cruce adelante-izq-der || Meta
+      // cruce: X X X X
+      // Serial.println("Cruce izq-der || Cruce adelante-izq-der || Meta");
+
+      // Avanzar un poco
+      servoD.write(180); // alante
+      servoI.write(0); // alante
+      delay(300);
+
+      // Parar
+      servoD.write(90);
+      servoI.write(90);
+      delay(1000);
+
+      actualizarTodosLosSensores();
+
+      if ( Sensor1 == LINEA && Sensor2 == LINEA && Sensor3 == LINEA && Sensor4 == LINEA ) {
+        // Serial.println("Meta");
+        // Delante del cruce: X X X X
+        // Meta
+        
+        delay(20000);
+
+      } 
+      else{
+        decidir();
+      }
+
+
+    } else if (Sensor1 == LINEA && Sensor2 == LINEA && Sensor3 == LINEA && Sensor4 == NO_LINEA  )  {
+      // Curva de izquierdas || Curva a izquierdas y frente
+      // X X X _
+      //Serial.println("Curva de izquierdas || Curva a izquierdas y frente");
+
+      // Avanzar un poco
+      servoD.write(180);
+      servoI.write(0);
+      delay(300);
+
+      // Parar
+      servoD.write(90);
+      servoI.write(90);
+      delay(1000);
+
+      // Actualizar sensores centrales
+      actualizarTodosLosSensores();
+
+      if ( Sensor1 == LINEA || Sensor2 == LINEA || Sensor3 == LINEA  ) {
+        decidir();
+
+      } else {
+        // Curva izq
+        girarIzquierda();
+        return;
+      }
+
+ 
+    } else if  (Sensor1 == NO_LINEA && Sensor2 == LINEA && Sensor3 == LINEA && Sensor4 == LINEA) {
+      // Curva de derechas || Curva a derechas y frente
+      // _ X X X
+      // Serial.println("Curva de derechas || Curva a derechas y frente");
+
+      // Avanzar un poco
+      servoD.write(180);
+      servoI.write(0);
+      delay(300);
+
+      // Parar
+      servoD.write(90);
+      servoI.write(90);
+      delay(1000);
+
+      // Actualizar sensores
+      actualizarTodosLosSensores();
+
+      if (  Sensor2 == LINEA || Sensor3 == LINEA || Sensor4 == LINEA  ) {
+        decidir();
+
+      } else {
+        // Solo Curva a derechas
+        // Serial.println("Curva der");
+        girarDerecha();
+        return;
+      }
+
+    } else if  (Sensor1 == NO_LINEA &&  Sensor2 == LINEA && Sensor3 == LINEA && Sensor4 == NO_LINEA  ) {
+      // Seguir carril central hacia delante
+      // _  X X  _
+      // Serial.println("Seguir carril central hacia delante");
+      servoD.write(180);
+      servoI.write(0);
+      return;
+
+    } else if ( Sensor2 == NO_LINEA && Sensor3 == LINEA ) {
+      // Seguir carril central - Reajuste a la izquierda
+      //  _ _ X _
+      // Serial.println("Seguir carril central - Reajuste a la izquierda");
+      servoD.write(90);
+      servoI.write(80);
+      return;
+
+    } else if (Sensor2 == LINEA && Sensor3 == NO_LINEA ) {
+      // Seguir carril central - Reajuste a la derecha
+      // _ X _ _
+      // Serial.println("Seguir carril central - Reajuste a la derecha");
+      servoD.write(100);
+      servoI.write(90);
+      return;
+      // QUITAR
+    }  else {
+      //servoD.write(90);
+      //servoI.write(90);
+    }
+
   }
 
 }
@@ -320,6 +438,8 @@ void simplificar() {
   camino.replace("IRI", "A");
   camino.replace("IRA", "D");
   camino.replace("ARI", "D");
+  camino.replace("DRI", "R");
+  camino.replace("DRD", "R");
 
   if (initialLength != camino.length())
     simplificar();
@@ -332,13 +452,13 @@ void decidir() {
     if (orden == 'I') {
       girarIzquierda();
     }
-    else if (orden == "R") {
+    else if (orden == 'R') {
       darMediaVuelta();
     }
-    else if (orden == "D") {
+    else if (orden == 'D') {
       girarDerecha();
     }
-    else if (orden == "A") {
+    else if (orden == 'A') {
       avanzar();
     }
     contador++;
